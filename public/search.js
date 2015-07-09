@@ -4,29 +4,44 @@ window.onload = function() {
     var sendButton = document.getElementById("send");
     var content = document.getElementById("content");
     var name = document.getElementById("search");
-    
 
-    sendButton.onclick = sendMessage = function() {
-        if(name.value == "") {
-            alert("Please type your search!");
-        } else {
-            gapi.client.setApiKey('248382530720-hv5ge8jgv4ipldg5h9cus11cua1a67g8.apps.googleusercontent.com');
-            gapi.client.load('youtube', 'v3', function() {
-               searchByKeyword();
-           });
-
-        }
-    };
+    sendButton.onclick = function() {
+        authorize();
+    }
 }
-
-searchByKeyword = function() {
-  var results = gapi.client.youtube.search.list({
-    q: 'korn',
-    part: 'snippet'
+$(document).ready(function() {
+    $("#send").keyup(function(e) {
+        if(e.keyCode == 13) {
+            authorize();
+        }
+    });
 });
 
-  for(var i in results.items) {
-    var item = results.items[i];
-    Logger.log('[%s] Title: %s', item.id.videoId, item.snippet.title);
-}
+authorize = function() {
+    if(name.value == "") {
+        alert("Please type your search!");
+    } else {
+        $('#search-container').html('Searching....');
+        gapi.client.setApiKey('AIzaSyDuZAsmDqaWeCj7XpK2Bz345Lij6VomtDc');
+        gapi.client.load('youtube', 'v3', function() {
+         searchByKeyword(name.value);
+     });
+
+    }
+};
+
+searchByKeyword = function(name) {
+  var request = gapi.client.youtube.search.list({
+     q: name,
+     part: 'snippet',
+     maxResults: 10                        
+ });
+  request.execute(function(response) {
+    var str = JSON.stringify(response.result);
+    $('#search-container').html('Results<br/>');
+    for(var i in response.result.items) {
+        var item = response.result.items[i];
+        $('#search-container').html($('#search-container').html() + "<div class='col-sm-12 row'>" + "<img src='" + item.snippet.thumbnails.high.url + "'/><br/>VideoId: <a href='https://www.youtube.com/watch?v=" + item.id.videoId + "'>" + item.id.videoId + "</a> <br/>Title:" + item.snippet.title + " " + "</div><br/>");
+    }
+});
 }
