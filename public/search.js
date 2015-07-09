@@ -5,8 +5,7 @@ window.onload = function() {
     var sendButton = document.getElementById("send");
     var content = document.getElementById("content");
     var name = document.getElementById("search");
-
-
+    
     socket.on('message', function (data) {
         // if(data.message) {
         //     messages.push(data);
@@ -27,7 +26,11 @@ window.onload = function() {
         if(name.value == "") {
             alert("Please type your search!");
         } else {
-            searchByKeyword();
+            gapi.client.setApiKey('248382530720-hv5ge8jgv4ipldg5h9cus11cua1a67g8.apps.googleusercontent.com');
+            gapi.client.load('youtube', 'v3', function() {
+               searchByKeyword();
+           });
+            
         }
     };
 }
