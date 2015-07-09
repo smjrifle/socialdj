@@ -8,10 +8,17 @@ app.set('view engine', "jade");
 
 app.engine('jade', require('jade').__express);
 
+
 app.get("/login", function(req, res){
     res.render("login");
 });
 app.get("/chat", function(req, res){
+
+app.get("/listener", function(req, res){
+    res.render("listener");
+});
+app.get("/", function(req, res){
+
     res.render("page");
 });
 
